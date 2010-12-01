@@ -1,12 +1,10 @@
 Name:           lcms2
-Version:        2.0a
-Release:        3%{?dist}
+Version:        2.1
+Release:        1%{?dist}
 Summary:        Color Management Engine
-Group:          System Environment/Libraries
 License:        MIT
 URL:            http://www.littlecms.com/
-Source0:        http://www.littlecms.com/lcms2-2.0a.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Source0:        http://www.littlecms.com/lcms2-2.1.tar.gz
 
 BuildRequires:  libjpeg-devel
 BuildRequires:  libtiff-devel
@@ -34,17 +32,10 @@ Provides:       littlecms-devel = %{version}-%{release}
 Development files for LittleCMS.
 
 %prep
-%setup -q -n lcms-2.0
-#chmod +x configure
+%setup -q
 
 %build
 %configure --disable-static --program-suffix=2
-
-# lcms tarball is generated on cygwin
-find * -type f -name "*.c" -exec chmod -x {} ';'
-find * -type f -name "*.h" -exec chmod -x {} ';'
-chmod -x AUTHORS
-chmod -x COPYING
 
 # remove rpath from libtool
 sed -i.rpath 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
@@ -60,9 +51,9 @@ install -D -m 644 include/lcms2.h $RPM_BUILD_ROOT/usr/include/lcms2.h
 install -D -m 644 include/lcms2_plugin.h $RPM_BUILD_ROOT/usr/include/lcms2_plugin.h
 
 # install docs as this is all we've got
-install -D -m 644 doc/LittleCMS2.0\ tutorial.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.0/tutorial.pdf
-install -D -m 644 doc/LittleCMS2.0\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.0/api.pdf
-install -D -m 644 doc/LittleCMS2.0\ Plugin\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.0/plugin-api.pdf
+install -D -m 644 doc/LittleCMS2.1\ tutorial.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.1/tutorial.pdf
+install -D -m 644 doc/LittleCMS2.1\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.1/api.pdf
+install -D -m 644 doc/LittleCMS2.1\ Plugin\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.1/plugin-api.pdf
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -83,12 +74,15 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files devel
 %defattr(-,root,root,-)
-%{_datadir}/doc/lcms2-devel-2.0/*.pdf
+%{_datadir}/doc/lcms2-devel-2.1/*.pdf
 %{_includedir}/*
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Wed Dec 01 2010 Richard Hughes <richard@hughsie.com> 2.1-1
+- Update to new upstream version.
+
 * Fri Jun 18 2010 Richard Hughes <richard@hughsie.com> 2.0a-3
 - Address some more review comments.
 - Resolves #590387
