@@ -1,6 +1,6 @@
 Name:           lcms2
 Version:        2.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Color Management Engine
 License:        MIT
 URL:            http://www.littlecms.com/
@@ -80,6 +80,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Wed Dec 01 2010 Richard Hughes <richard@hughsie.com> 2.1-1
 - Update to new upstream version.
 
