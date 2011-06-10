@@ -1,10 +1,10 @@
 Name:           lcms2
-Version:        2.1
-Release:        2%{?dist}
+Version:        2.2
+Release:        1%{?dist}
 Summary:        Color Management Engine
 License:        MIT
 URL:            http://www.littlecms.com/
-Source0:        http://www.littlecms.com/lcms2-2.1.tar.gz
+Source0:        http://www.littlecms.com/lcms2-2.2.tar.gz
 
 BuildRequires:  libjpeg-devel
 BuildRequires:  libtiff-devel
@@ -51,9 +51,9 @@ install -D -m 644 include/lcms2.h $RPM_BUILD_ROOT/usr/include/lcms2.h
 install -D -m 644 include/lcms2_plugin.h $RPM_BUILD_ROOT/usr/include/lcms2_plugin.h
 
 # install docs as this is all we've got
-install -D -m 644 doc/LittleCMS2.1\ tutorial.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.1/tutorial.pdf
-install -D -m 644 doc/LittleCMS2.1\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.1/api.pdf
-install -D -m 644 doc/LittleCMS2.1\ Plugin\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.1/plugin-api.pdf
+install -D -m 644 doc/LittleCMS2.2\ tutorial.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.2/tutorial.pdf
+install -D -m 644 doc/LittleCMS2.?\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.2/api.pdf
+install -D -m 644 doc/LittleCMS2.?\ Plugin\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.2/plugin-api.pdf
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -74,12 +74,17 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files devel
 %defattr(-,root,root,-)
-%{_datadir}/doc/lcms2-devel-2.1/*.pdf
+%{_datadir}/doc/lcms2-devel-2.2/*.pdf
 %{_includedir}/*
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Fri Jun 10 2011 Richard Hughes <richard@hughsie.com> 2.2-1
+- Update to new upstream version
+- Stability and efficienty fixes
+- Adds support for dictionary metatag
+
 * Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
