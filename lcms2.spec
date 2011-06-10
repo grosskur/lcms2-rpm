@@ -1,6 +1,6 @@
 Name:           lcms2
 Version:        2.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Color Management Engine
 License:        MIT
 URL:            http://www.littlecms.com/
@@ -80,6 +80,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Fri Jun 10 2011 Richard Hughes <richard@hughsie.com> 2.2-2
+- Actually update the sources...
+
 * Fri Jun 10 2011 Richard Hughes <richard@hughsie.com> 2.2-1
 - Update to new upstream version
 - Stability and efficienty fixes
