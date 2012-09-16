@@ -1,10 +1,10 @@
 Name:           lcms2
-Version:        2.3
-Release:        3%{?dist}
+Version:        2.4
+Release:        1%{?dist}
 Summary:        Color Management Engine
 License:        MIT
 URL:            http://www.littlecms.com/
-Source0:        http://www.littlecms.com/lcms2-2.3.tar.gz
+Source0:        http://www.littlecms.com/lcms2-2.4.tar.gz
 
 BuildRequires:  libjpeg-devel
 BuildRequires:  libtiff-devel
@@ -51,9 +51,9 @@ install -D -m 644 include/lcms2.h $RPM_BUILD_ROOT/usr/include/lcms2.h
 install -D -m 644 include/lcms2_plugin.h $RPM_BUILD_ROOT/usr/include/lcms2_plugin.h
 
 # install docs as this is all we've got
-install -D -m 644 doc/LittleCMS2.3\ tutorial.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.3/tutorial.pdf
-install -D -m 644 doc/LittleCMS2.?\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.3/api.pdf
-install -D -m 644 doc/LittleCMS2.?\ Plugin\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.3/plugin-api.pdf
+install -D -m 644 doc/LittleCMS2.4\ tutorial.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.4/tutorial.pdf
+install -D -m 644 doc/LittleCMS2.?\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.4/api.pdf
+install -D -m 644 doc/LittleCMS2.?\ Plugin\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.4/plugin-api.pdf
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -74,12 +74,20 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files devel
 %defattr(-,root,root,-)
-%{_datadir}/doc/lcms2-devel-2.3/*.pdf
+%{_datadir}/doc/lcms2-devel-2.4/*.pdf
 %{_includedir}/*
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Sat Sep 15 2012 Richard Hughes <richard@hughsie.com> 2.4-1
+- Update to new upstream version.
+- Black point detection from the algorithm disclosed by Adobe
+- Added support for transforms on planar data with different stride
+- Added a new plug-in type for optimizing full transforms
+- Linear (gamma 1.0) profiles can now operate in unbounded mode
+- Added "half" float support
+
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
