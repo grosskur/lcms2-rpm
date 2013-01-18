@@ -1,6 +1,6 @@
 Name:           lcms2
 Version:        2.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Color Management Engine
 License:        MIT
 URL:            http://www.littlecms.com/
@@ -80,6 +80,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Fri Jan 18 2013 Adam Tkac <atkac redhat com> - 2.4-3
+- rebuild due to "jpeg8-ABI" feature drop
+
 * Fri Dec 21 2012 Adam Tkac <atkac redhat com> - 2.4-2
 - rebuild against new libjpeg
 
