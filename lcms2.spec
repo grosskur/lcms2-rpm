@@ -1,10 +1,11 @@
 Name:           lcms2
 Version:        2.4
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Color Management Engine
 License:        MIT
 URL:            http://www.littlecms.com/
 Source0:        http://www.littlecms.com/lcms2-2.4.tar.gz
+Patch1:		lcms2-threading-plugin.patch
 
 BuildRequires:  libjpeg-devel
 BuildRequires:  libtiff-devel
@@ -33,6 +34,7 @@ Development files for LittleCMS.
 
 %prep
 %setup -q
+%patch1 -p1 -b .threading-plugin
 
 %build
 %configure --disable-static --program-suffix=2
@@ -80,6 +82,10 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Thu Mar  7 2013 Tim Waugh <twaugh@redhat.com> - 2.4-5
+- Added upstream fix for threading issue with plugin registration
+  (bug #912307).
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.4-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
