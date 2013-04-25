@@ -1,6 +1,6 @@
 diff -up lcms2-2.4/include/lcms2.h.threading-plugin lcms2-2.4/include/lcms2.h
 --- lcms2-2.4/include/lcms2.h.threading-plugin	2012-09-10 17:01:51.000000000 +0100
-+++ lcms2-2.4/include/lcms2.h	2013-03-07 16:38:14.475481017 +0000
++++ lcms2-2.4/include/lcms2.h	2013-04-25 15:45:02.853816514 +0100
 @@ -985,6 +985,7 @@ CMSAPI long int          CMSEXPORT cmsfi
  // Plug-In registering  ---------------------------------------------------------------------------------------------------
  
@@ -11,7 +11,7 @@ diff -up lcms2-2.4/include/lcms2.h.threading-plugin lcms2-2.4/include/lcms2.h
  // Error logging ----------------------------------------------------------------------------------------------------------
 diff -up lcms2-2.4/src/cmscnvrt.c.threading-plugin lcms2-2.4/src/cmscnvrt.c
 --- lcms2-2.4/src/cmscnvrt.c.threading-plugin	2012-09-10 17:01:51.000000000 +0100
-+++ lcms2-2.4/src/cmscnvrt.c	2013-03-07 16:38:14.475481017 +0000
++++ lcms2-2.4/src/cmscnvrt.c	2013-04-25 15:45:02.854816518 +0100
 @@ -1028,7 +1028,7 @@ cmsUInt32Number CMSEXPORT cmsGetSupporte
  }
  
@@ -32,7 +32,7 @@ diff -up lcms2-2.4/src/cmscnvrt.c.threading-plugin lcms2-2.4/src/cmscnvrt.c
  
 diff -up lcms2-2.4/src/cmsgamma.c.threading-plugin lcms2-2.4/src/cmsgamma.c
 --- lcms2-2.4/src/cmsgamma.c.threading-plugin	2012-09-10 17:01:51.000000000 +0100
-+++ lcms2-2.4/src/cmsgamma.c	2013-03-07 16:38:14.475481017 +0000
++++ lcms2-2.4/src/cmsgamma.c	2013-04-25 15:45:02.855816522 +0100
 @@ -70,7 +70,7 @@ static _cmsParametricCurvesCollection De
  static _cmsParametricCurvesCollection* ParametricCurves = &DefaultCurves;
  
@@ -51,9 +51,142 @@ diff -up lcms2-2.4/src/cmsgamma.c.threading-plugin lcms2-2.4/src/cmsgamma.c
      if (fl == NULL) return FALSE;
  
      // Copy the parameters
+diff -up lcms2-2.4/src/cmsio0.c.threading-plugin lcms2-2.4/src/cmsio0.c
+--- lcms2-2.4/src/cmsio0.c.threading-plugin	2012-09-10 17:01:51.000000000 +0100
++++ lcms2-2.4/src/cmsio0.c	2013-04-25 15:46:28.537183522 +0100
+@@ -1057,6 +1057,7 @@ cmsBool SaveTags(_cmsICCPROFILE* Icc, _c
+     cmsTagDescriptor* TagDescriptor;
+     cmsTagTypeSignature TypeBase;
+     cmsTagTypeHandler* TypeHandler;
++    cmsTagTypeHandler LocalTypeHandler;
+ 
+ 
+     for (i=0; i < Icc -> TagCount; i++) {
+@@ -1124,9 +1125,10 @@ cmsBool SaveTags(_cmsICCPROFILE* Icc, _c
+             if (!_cmsWriteTypeBase(io, TypeBase))
+                 return FALSE;
+ 
+-            TypeHandler ->ContextID  = Icc ->ContextID;
+-            TypeHandler ->ICCVersion = Icc ->Version;
+-            if (!TypeHandler ->WritePtr(TypeHandler, io, Data, TagDescriptor ->ElemCount)) {
++            LocalTypeHandler = *TypeHandler;
++            LocalTypeHandler.ContextID  = Icc ->ContextID;
++            LocalTypeHandler.ICCVersion = Icc ->Version;
++            if (!LocalTypeHandler.WritePtr(&LocalTypeHandler, io, Data, TagDescriptor ->ElemCount)) {
+ 
+ 				char String[5];
+ 
+@@ -1302,10 +1304,11 @@ cmsBool  CMSEXPORT cmsCloseProfile(cmsHP
+             cmsTagTypeHandler* TypeHandler = Icc ->TagTypeHandlers[i];
+ 
+             if (TypeHandler != NULL) {
++                cmsTagTypeHandler LocalTypeHandler = *TypeHandler;
+ 
+-                TypeHandler ->ContextID = Icc ->ContextID;              // As an additional parameters
+-                TypeHandler ->ICCVersion = Icc ->Version;
+-                TypeHandler ->FreePtr(TypeHandler, Icc -> TagPtrs[i]);
++                LocalTypeHandler.ContextID = Icc ->ContextID;              // As an additional parameters
++                LocalTypeHandler.ICCVersion = Icc ->Version;
++                LocalTypeHandler.FreePtr(&LocalTypeHandler, Icc -> TagPtrs[i]);
+             }
+             else
+                 _cmsFree(Icc ->ContextID, Icc ->TagPtrs[i]);
+@@ -1349,6 +1352,7 @@ void* CMSEXPORT cmsReadTag(cmsHPROFILE h
+     _cmsICCPROFILE* Icc = (_cmsICCPROFILE*) hProfile;
+     cmsIOHANDLER* io = Icc ->IOhandler;
+     cmsTagTypeHandler* TypeHandler;
++    cmsTagTypeHandler LocalTypeHandler;
+     cmsTagDescriptor*  TagDescriptor;
+     cmsTagTypeSignature BaseType;
+     cmsUInt32Number Offset, TagSize;
+@@ -1389,14 +1393,15 @@ void* CMSEXPORT cmsReadTag(cmsHPROFILE h
+     // Get type handler
+     TypeHandler = _cmsGetTagTypeHandler(BaseType);
+     if (TypeHandler == NULL) return NULL;
++    LocalTypeHandler = *TypeHandler;
+ 
+ 
+     // Read the tag
+     Icc -> TagTypeHandlers[n] = TypeHandler;
+ 
+-    TypeHandler ->ContextID = Icc ->ContextID;
+-    TypeHandler ->ICCVersion = Icc ->Version;
+-    Icc -> TagPtrs[n] = TypeHandler ->ReadPtr(TypeHandler, io, &ElemCount, TagSize);
++    LocalTypeHandler.ContextID = Icc ->ContextID;
++    LocalTypeHandler.ICCVersion = Icc ->Version;
++    Icc -> TagPtrs[n] = LocalTypeHandler.ReadPtr(&LocalTypeHandler, io, &ElemCount, TagSize);
+ 
+     // The tag type is supported, but something wrong happend and we cannot read the tag.
+     // let know the user about this (although it is just a warning)
+@@ -1449,6 +1454,7 @@ cmsBool CMSEXPORT cmsWriteTag(cmsHPROFIL
+ {
+     _cmsICCPROFILE* Icc = (_cmsICCPROFILE*) hProfile;
+     cmsTagTypeHandler* TypeHandler = NULL;
++    cmsTagTypeHandler LocalTypeHandler;
+     cmsTagDescriptor* TagDescriptor = NULL;
+     cmsTagTypeSignature Type;
+     int i;
+@@ -1479,9 +1485,10 @@ cmsBool CMSEXPORT cmsWriteTag(cmsHPROFIL
+ 
+                 if (TypeHandler != NULL) {
+ 
+-                    TypeHandler ->ContextID = Icc ->ContextID;              // As an additional parameter
+-                    TypeHandler ->ICCVersion = Icc ->Version;
+-                    TypeHandler->FreePtr(TypeHandler, Icc -> TagPtrs[i]);
++                    LocalTypeHandler = *TypeHandler;
++                    LocalTypeHandler.ContextID = Icc ->ContextID;              // As an additional parameter
++                    LocalTypeHandler.ICCVersion = Icc ->Version;
++                    LocalTypeHandler.FreePtr(&LocalTypeHandler, Icc -> TagPtrs[i]);
+                 }
+             }
+         }
+@@ -1558,9 +1565,10 @@ cmsBool CMSEXPORT cmsWriteTag(cmsHPROFIL
+     Icc ->TagSizes[i]         = 0;
+     Icc ->TagOffsets[i]       = 0;
+ 
+-    TypeHandler ->ContextID  = Icc ->ContextID;
+-    TypeHandler ->ICCVersion = Icc ->Version;
+-    Icc ->TagPtrs[i]         = TypeHandler ->DupPtr(TypeHandler, data, TagDescriptor ->ElemCount);
++    LocalTypeHandler = *TypeHandler;
++    LocalTypeHandler.ContextID  = Icc ->ContextID;
++    LocalTypeHandler.ICCVersion = Icc ->Version;
++    Icc ->TagPtrs[i]         = LocalTypeHandler.DupPtr(&LocalTypeHandler, data, TagDescriptor ->ElemCount);
+ 
+     if (Icc ->TagPtrs[i] == NULL)  {
+ 
+@@ -1587,6 +1595,7 @@ cmsInt32Number CMSEXPORT cmsReadRawTag(c
+     int i;
+     cmsIOHANDLER* MemIO;
+     cmsTagTypeHandler* TypeHandler = NULL;
++    cmsTagTypeHandler LocalTypeHandler;
+     cmsTagDescriptor* TagDescriptor = NULL;
+     cmsUInt32Number rc;
+     cmsUInt32Number Offset, TagSize;
+@@ -1654,16 +1663,18 @@ cmsInt32Number CMSEXPORT cmsReadRawTag(c
+          return 0;
+     }
+ 
++    // FIXME: No handling for TypeHandler == NULL here?
+     // Serialize
+-    TypeHandler ->ContextID  = Icc ->ContextID;
+-    TypeHandler ->ICCVersion = Icc ->Version;
++    LocalTypeHandler = *TypeHandler;
++    LocalTypeHandler.ContextID  = Icc ->ContextID;
++    LocalTypeHandler.ICCVersion = Icc ->Version;
+ 
+     if (!_cmsWriteTypeBase(MemIO, TypeHandler ->Signature)) {
+         cmsCloseIOhandler(MemIO);
+         return 0;
+     }
+ 
+-    if (!TypeHandler ->WritePtr(TypeHandler, MemIO, Object, TagDescriptor ->ElemCount)) {
++    if (!LocalTypeHandler.WritePtr(&LocalTypeHandler, MemIO, Object, TagDescriptor ->ElemCount)) {
+         cmsCloseIOhandler(MemIO);
+         return 0;
+     }
 diff -up lcms2-2.4/src/cmsopt.c.threading-plugin lcms2-2.4/src/cmsopt.c
 --- lcms2-2.4/src/cmsopt.c.threading-plugin	2012-09-10 17:01:51.000000000 +0100
-+++ lcms2-2.4/src/cmsopt.c	2013-03-07 16:38:14.475481017 +0000
++++ lcms2-2.4/src/cmsopt.c	2013-04-25 15:45:02.856816527 +0100
 @@ -1609,7 +1609,7 @@ static _cmsOptimizationCollection Defaul
  static _cmsOptimizationCollection* OptimizationCollection = DefaultOptimization;
  
@@ -74,7 +207,7 @@ diff -up lcms2-2.4/src/cmsopt.c.threading-plugin lcms2-2.4/src/cmsopt.c
      // Copy the parameters
 diff -up lcms2-2.4/src/cmspack.c.threading-plugin lcms2-2.4/src/cmspack.c
 --- lcms2-2.4/src/cmspack.c.threading-plugin	2012-09-10 17:01:51.000000000 +0100
-+++ lcms2-2.4/src/cmspack.c	2013-03-07 16:38:14.477481025 +0000
++++ lcms2-2.4/src/cmspack.c	2013-04-25 15:45:02.858816535 +0100
 @@ -3137,7 +3137,7 @@ static cmsFormattersFactoryList* Factory
  
  
@@ -95,7 +228,7 @@ diff -up lcms2-2.4/src/cmspack.c.threading-plugin lcms2-2.4/src/cmspack.c
      fl ->Factory    = Plugin ->FormattersFactory;
 diff -up lcms2-2.4/src/cmsplugin.c.threading-plugin lcms2-2.4/src/cmsplugin.c
 --- lcms2-2.4/src/cmsplugin.c.threading-plugin	2012-09-10 17:01:51.000000000 +0100
-+++ lcms2-2.4/src/cmsplugin.c	2013-03-07 16:38:14.478481030 +0000
++++ lcms2-2.4/src/cmsplugin.c	2013-04-25 15:45:02.859816539 +0100
 @@ -514,10 +514,10 @@ cmsBool CMSEXPORT _cmsIOPrintf(cmsIOHAND
  static _cmsSubAllocator* PluginPool = NULL;
  
@@ -188,9 +321,28 @@ diff -up lcms2-2.4/src/cmsplugin.c.threading-plugin lcms2-2.4/src/cmsplugin.c
  
      if (PluginPool != NULL)
          _cmsSubAllocDestroy(PluginPool);
+diff -up lcms2-2.4/src/cmssamp.c.threading-plugin lcms2-2.4/src/cmssamp.c
+--- lcms2-2.4/src/cmssamp.c.threading-plugin	2012-09-10 17:01:51.000000000 +0100
++++ lcms2-2.4/src/cmssamp.c	2013-04-25 15:45:22.998902804 +0100
+@@ -38,13 +38,13 @@
+ static
+ cmsHTRANSFORM CreateRoundtripXForm(cmsHPROFILE hProfile, cmsUInt32Number nIntent)
+ {
+-    cmsHPROFILE hLab = cmsCreateLab4Profile(NULL);
++    cmsContext ContextID = cmsGetProfileContextID(hProfile);
++    cmsHPROFILE hLab = cmsCreateLab4ProfileTHR(ContextID, NULL);
+     cmsHTRANSFORM xform;
+     cmsBool BPC[4] = { FALSE, FALSE, FALSE, FALSE };
+     cmsFloat64Number States[4] = { 1.0, 1.0, 1.0, 1.0 };
+     cmsHPROFILE hProfiles[4];
+     cmsUInt32Number Intents[4];
+-    cmsContext ContextID = cmsGetProfileContextID(hProfile);
+ 
+     hProfiles[0] = hLab; hProfiles[1] = hProfile; hProfiles[2] = hProfile; hProfiles[3] = hLab;
+     Intents[0]   = INTENT_RELATIVE_COLORIMETRIC; Intents[1] = nIntent; Intents[2] = INTENT_RELATIVE_COLORIMETRIC; Intents[3] = INTENT_RELATIVE_COLORIMETRIC;
 diff -up lcms2-2.4/src/cmstypes.c.threading-plugin lcms2-2.4/src/cmstypes.c
 --- lcms2-2.4/src/cmstypes.c.threading-plugin	2012-09-10 17:01:51.000000000 +0100
-+++ lcms2-2.4/src/cmstypes.c	2013-03-07 16:38:14.481481041 +0000
++++ lcms2-2.4/src/cmstypes.c	2013-04-25 15:45:02.861816548 +0100
 @@ -62,7 +62,7 @@ typedef struct _cmsTagTypeLinkedList_st
  
  // Register a new type handler. This routine is shared between normal types and MPE
@@ -248,7 +400,7 @@ diff -up lcms2-2.4/src/cmstypes.c.threading-plugin lcms2-2.4/src/cmstypes.c
      pt ->Signature  = Plugin ->Signature;
 diff -up lcms2-2.4/src/cmsxform.c.threading-plugin lcms2-2.4/src/cmsxform.c
 --- lcms2-2.4/src/cmsxform.c.threading-plugin	2012-09-10 17:01:51.000000000 +0100
-+++ lcms2-2.4/src/cmsxform.c	2013-03-07 16:38:14.482481045 +0000
++++ lcms2-2.4/src/cmsxform.c	2013-04-25 15:45:02.862816552 +0100
 @@ -367,7 +367,7 @@ typedef struct _cmsTransformCollection_s
  static _cmsTransformCollection* TransformCollection = NULL;
  
@@ -269,7 +421,7 @@ diff -up lcms2-2.4/src/cmsxform.c.threading-plugin lcms2-2.4/src/cmsxform.c
        // Copy the parameters
 diff -up lcms2-2.4/src/lcms2_internal.h.threading-plugin lcms2-2.4/src/lcms2_internal.h
 --- lcms2-2.4/src/lcms2_internal.h.threading-plugin	2012-09-10 17:01:51.000000000 +0100
-+++ lcms2-2.4/src/lcms2_internal.h	2013-03-07 16:38:14.483481050 +0000
++++ lcms2-2.4/src/lcms2_internal.h	2013-04-25 15:45:02.862816552 +0100
 @@ -167,7 +167,7 @@ cmsINLINE cmsUInt16Number _cmsQuickSatur
  // Plug-In registering ---------------------------------------------------------------
  

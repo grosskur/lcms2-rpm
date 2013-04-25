@@ -1,6 +1,6 @@
 Name:           lcms2
 Version:        2.4
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Color Management Engine
 License:        MIT
 URL:            http://www.littlecms.com/
@@ -82,6 +82,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Thu Apr 25 2013 Tim Waugh <twaugh@redhat.com> - 2.4-6
+- Applied upstream fixes for threading (bug #951984).
+
 * Thu Mar  7 2013 Tim Waugh <twaugh@redhat.com> - 2.4-5
 - Added upstream fix for threading issue with plugin registration
   (bug #912307).
