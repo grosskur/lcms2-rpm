@@ -19,6 +19,7 @@ parallel installed with the original (deprecated) lcms.
 %package        utils
 Summary:        Utility applications for %{name}
 Group:          Applications/Productivity
+Requires:       %{name} = %{version}-%{release}
 
 %description    utils
 The %{name}-utils package contains utility applications for %{name}.
