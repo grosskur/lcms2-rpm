@@ -1,11 +1,10 @@
 Name:           lcms2
-Version:        2.4
-Release:        6%{?dist}
+Version:        2.5
+Release:        0.1%{?dist}
 Summary:        Color Management Engine
 License:        MIT
 URL:            http://www.littlecms.com/
-Source0:        http://www.littlecms.com/lcms2-2.4.tar.gz
-Patch1:		lcms2-threading-plugin.patch
+Source0:        http://www.littlecms.com/lcms2-2.5rc1.tar.gz
 
 BuildRequires:  libjpeg-devel
 BuildRequires:  libtiff-devel
@@ -34,8 +33,7 @@ Provides:       littlecms-devel = %{version}-%{release}
 Development files for LittleCMS.
 
 %prep
-%setup -q
-%patch1 -p1 -b .threading-plugin
+%setup -q -n lcms2-2.5rc1
 
 %build
 %configure --disable-static --program-suffix=2
@@ -54,9 +52,9 @@ install -D -m 644 include/lcms2.h $RPM_BUILD_ROOT/usr/include/lcms2.h
 install -D -m 644 include/lcms2_plugin.h $RPM_BUILD_ROOT/usr/include/lcms2_plugin.h
 
 # install docs as this is all we've got
-install -D -m 644 doc/LittleCMS2.4\ tutorial.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.4/tutorial.pdf
-install -D -m 644 doc/LittleCMS2.?\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.4/api.pdf
-install -D -m 644 doc/LittleCMS2.?\ Plugin\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.4/plugin-api.pdf
+install -D -m 644 doc/LittleCMS2.?\ tutorial.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.5/tutorial.pdf
+install -D -m 644 doc/LittleCMS2.?\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.5/api.pdf
+install -D -m 644 doc/LittleCMS2.?\ Plugin\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.5/plugin-api.pdf
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -77,12 +75,15 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files devel
 %defattr(-,root,root,-)
-%{_datadir}/doc/lcms2-devel-2.4/*.pdf
+%{_datadir}/doc/lcms2-devel-2.5/*.pdf
 %{_includedir}/*
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Thu May 30 2013 Richard Hughes <richard@hughsie.com> 2.5-0.1
+- Update to new release candidate version.
+
 * Thu Apr 25 2013 Tim Waugh <twaugh@redhat.com> - 2.4-6
 - Applied upstream fixes for threading (bug #951984).
 
