@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        Color Management Engine
 License:        MIT
 URL:            http://www.littlecms.com/
-Source0:        http://www.littlecms.com/lcms2-2.5rc3.tar.gz
+Source0:        http://www.littlecms.com/lcms2-2.5.tar.gz
 
 BuildRequires:  libjpeg-devel
 BuildRequires:  libtiff-devel
@@ -33,7 +33,7 @@ Provides:       littlecms-devel = %{version}-%{release}
 Development files for LittleCMS.
 
 %prep
-%setup -q -n lcms2-2.5rc3
+%setup -q -n lcms2-2.5
 
 %build
 %configure --disable-static --program-suffix=2
