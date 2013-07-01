@@ -1,6 +1,6 @@
 Name:           lcms2
 Version:        2.5
-Release:        0.2%{?dist}
+Release:        1%{?dist}
 Summary:        Color Management Engine
 License:        MIT
 URL:            http://www.littlecms.com/
@@ -81,6 +81,24 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Mon Jul 01 2013 Richard Hughes <richard@hughsie.com> 2.5-1
+- Update to new upstream version.
+- Added a reference for Mac MLU tag
+- Added a way to read the profile creator from header
+- Added error descriptions on cmsSmoothToneCurve
+- Added identity curves support for write V2 LUT
+- Added new cmsPlugInTHR() and fixed some race conditions
+- Added TIFF Lab16 handling on tifficc
+- Fixed a bug on big endian platforms not supporting uint64 or long long.
+- Fixed a multithead bug on optimization
+- Fixed devicelink generation for 8 bits
+- Fixed some 64 bit warnings on size_t to uint32 conversions
+- Rendering intent used when creating the transform is now propagated to profile
+- RGB profiles store only one copy of the curve to save space
+- Transform2Devicelink now keeps white point when guessing deviceclass is enabled
+- Update black point detection algorithm to reflect ICC changes
+- User defined parametric curves can now be saved in ICC profiles
+
 * Thu Jun 27 2013 Richard Hughes <richard@hughsie.com> 2.5-0.2
 - Update to new release candidate version.
 
