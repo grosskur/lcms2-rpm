@@ -1,10 +1,10 @@
 Name:           lcms2
-Version:        2.5
-Release:        2%{?dist}
+Version:        2.6
+Release:        0.1.rc1%{?dist}
 Summary:        Color Management Engine
 License:        MIT
 URL:            http://www.littlecms.com/
-Source0:        http://www.littlecms.com/lcms2-2.5.tar.gz
+Source0:        http://www.littlecms.com/lcms2-2.6rc1.tar.gz
 
 BuildRequires:  libjpeg-devel
 BuildRequires:  libtiff-devel
@@ -33,7 +33,7 @@ Provides:       littlecms-devel = %{version}-%{release}
 Development files for LittleCMS.
 
 %prep
-%setup -q -n lcms2-2.5
+%setup -q -n lcms2-2.6rc1
 
 %build
 %configure --disable-static --program-suffix=2
@@ -52,9 +52,9 @@ install -D -m 644 include/lcms2.h $RPM_BUILD_ROOT/usr/include/lcms2.h
 install -D -m 644 include/lcms2_plugin.h $RPM_BUILD_ROOT/usr/include/lcms2_plugin.h
 
 # install docs as this is all we've got
-install -D -m 644 doc/LittleCMS2.?\ tutorial.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.5/tutorial.pdf
-install -D -m 644 doc/LittleCMS2.?\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.5/api.pdf
-install -D -m 644 doc/LittleCMS2.?\ Plugin\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.5/plugin-api.pdf
+install -D -m 644 doc/LittleCMS2.?\ tutorial.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.6/tutorial.pdf
+install -D -m 644 doc/LittleCMS2.?\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.6/api.pdf
+install -D -m 644 doc/LittleCMS2.?\ Plugin\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.6/plugin-api.pdf
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -75,12 +75,15 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files devel
 %defattr(-,root,root,-)
-%{_datadir}/doc/lcms2-devel-2.5/*.pdf
+%{_datadir}/doc/lcms2-devel-2.6/*.pdf
 %{_includedir}/*
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Fri Feb 14 2014 Richard Hughes <richard@hughsie.com> 2.6-0.1.rc1
+- Update to new prerelease upstream version.
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.5-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
