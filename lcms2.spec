@@ -1,10 +1,10 @@
 Name:           lcms2
 Version:        2.6
-Release:        0.1.rc1%{?dist}
+Release:        0.1.rc3%{?dist}
 Summary:        Color Management Engine
 License:        MIT
 URL:            http://www.littlecms.com/
-Source0:        http://www.littlecms.com/lcms2-2.6rc1.tar.gz
+Source0:        http://www.littlecms.com/lcms2-2.6rc3.tar.gz
 
 BuildRequires:  libjpeg-devel
 BuildRequires:  libtiff-devel
@@ -33,7 +33,7 @@ Provides:       littlecms-devel = %{version}-%{release}
 Development files for LittleCMS.
 
 %prep
-%setup -q -n lcms2-2.6rc1
+%setup -q -n lcms2-2.6rc3
 
 %build
 %configure --disable-static --program-suffix=2
@@ -81,6 +81,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Wed Feb 19 2014 Richard Hughes <richard@hughsie.com> 2.6-0.1.rc3
+- Update to new prerelease upstream version.
+
 * Fri Feb 14 2014 Richard Hughes <richard@hughsie.com> 2.6-0.1.rc1
 - Update to new prerelease upstream version.
 
