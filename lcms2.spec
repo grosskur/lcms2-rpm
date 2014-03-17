@@ -1,10 +1,10 @@
 Name:           lcms2
 Version:        2.6
-Release:        0.1.rc3%{?dist}
+Release:        1%{?dist}
 Summary:        Color Management Engine
 License:        MIT
 URL:            http://www.littlecms.com/
-Source0:        http://www.littlecms.com/lcms2-2.6rc3.tar.gz
+Source0:        http://www.littlecms.com/lcms2-2.6.tar.gz
 
 BuildRequires:  libjpeg-devel
 BuildRequires:  libtiff-devel
@@ -33,7 +33,7 @@ Provides:       littlecms-devel = %{version}-%{release}
 Development files for LittleCMS.
 
 %prep
-%setup -q -n lcms2-2.6rc3
+%setup -q -n lcms2-2.6
 
 %build
 %configure --disable-static --program-suffix=2
@@ -81,6 +81,16 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Mon Mar 17 2014 Richard Hughes <richard@hughsie.com> 2.6-1
+- Update to new upstream version.
+- Added a way to retrieve matrix shaper always, no matter LUT is present
+- Added pthread dependency
+- Big revamp on Contexts, from Artifex
+- Fixed a bug in PCS/Colorspace order when reading V2 Lab devicelinks
+- Fixed some indexing out of bounds in floating point interpolation
+- Fix for delete tag memory corruption
+- New locking plug-in, from Artifex
+
 * Wed Feb 19 2014 Richard Hughes <richard@hughsie.com> 2.6-0.1.rc3
 - Update to new prerelease upstream version.
 
