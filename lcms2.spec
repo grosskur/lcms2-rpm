@@ -67,13 +67,13 @@ make %{?_smp_mflags}
 rm -rf ${RPM_BUILD_ROOT}
 make install DESTDIR=${RPM_BUILD_ROOT} INSTALL="install -p"
 find ${RPM_BUILD_ROOT} -type f -name "*.la" -exec rm -f {} ';'
-install -D -m 644 include/lcms2.h $RPM_BUILD_ROOT/usr/include/lcms2.h
-install -D -m 644 include/lcms2_plugin.h $RPM_BUILD_ROOT/usr/include/lcms2_plugin.h
+install -D -m 644 include/lcms2.h $RPM_BUILD_ROOT/%{_includedir}/lcms2.h
+install -D -m 644 include/lcms2_plugin.h $RPM_BUILD_ROOT/%{_includedir}/lcms2_plugin.h
 
 # install docs as this is all we've got
-install -D -m 644 doc/LittleCMS2.?\ tutorial.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.6/tutorial.pdf
-install -D -m 644 doc/LittleCMS2.?\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.6/api.pdf
-install -D -m 644 doc/LittleCMS2.?\ Plugin\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/lcms2-devel-2.6/plugin-api.pdf
+install -D -m 644 doc/LittleCMS2.?\ tutorial.pdf $RPM_BUILD_ROOT/usr/share/doc/%{name}-devel-2.6/tutorial.pdf
+install -D -m 644 doc/LittleCMS2.?\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/%{name}-devel-2.6/api.pdf
+install -D -m 644 doc/LittleCMS2.?\ Plugin\ API.pdf $RPM_BUILD_ROOT/usr/share/doc/%{name}-devel-2.6/plugin-api.pdf
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -94,7 +94,7 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files devel
 %defattr(-,root,root,-)
-%{_datadir}/doc/lcms2-devel-2.6/*.pdf
+%{_docdir}/%{name}-devel-2.6/*.pdf
 %{_includedir}/*
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{_name}.pc
