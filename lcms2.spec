@@ -1,4 +1,23 @@
-Name:           lcms2
+%global p_vendor         hhvm
+%define _name            lcms2
+
+%if 0%{?p_vendor:1}
+  %global _orig_prefix   %{_prefix}
+  %global name_prefix    %{p_vendor}-
+
+  # Use the alternate locations for things.
+  %define _lib            lib 
+  %global _real_initrddir %{_initrddir}
+  %global _sysconfdir     %{_sysconfdir}/hhvm
+  %define _prefix         /opt/hhvm
+  %define _libdir         %{_prefix}/lib
+  %define _mandir         %{_datadir}/man
+%endif
+
+# 11503 -- Don't provide un-namespaced libraries inside rpm database
+AutoReqProv: 0
+
+Name:           %{?name_prefix}%{_name}
 Version:        2.6
 Release:        1%{?dist}
 Summary:        Color Management Engine
@@ -78,7 +97,7 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_datadir}/doc/lcms2-devel-2.6/*.pdf
 %{_includedir}/*
 %{_libdir}/*.so
-%{_libdir}/pkgconfig/%{name}.pc
+%{_libdir}/pkgconfig/%{_name}.pc
 
 %changelog
 * Mon Mar 17 2014 Richard Hughes <richard@hughsie.com> 2.6-1
